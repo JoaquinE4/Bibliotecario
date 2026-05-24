@@ -1,105 +1,123 @@
 <?php
 require_once __DIR__ . '/../models/usuarios.model.php';
-require_once __DIR__ . '/../views/usuarios.view.php';
+require_once __DIR__ . '/../views/usuarios.view.phtml';
 
-class UsuariosController {
+class UsuariosController
+{
     private $model;
     private $view;
 
-    public function __construct($pdo) {
+    public function __construct($pdo)
+    {
         $this->model = new UsuariosModel($pdo);
         $this->view  = new UsuariosView();
     }
 
-    public function getAll() {
+    public function getAll($req)
+    {
         $usuarios = $this->model->getAll();
-        $this->view->renderAll($usuarios);
+        $this->view->renderAll($req, $usuarios);
     }
 
-    public function formNuevo() {
-        $this->view->renderForm();
+    public function formNuevo($req)
+    {
+        $this->view->renderForm($req);
     }
 
-    public function insert() {
-        $usuario  = trim($_POST['usuario'] ?? '');
-        $email    = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $rol      = $_POST['rol'] ?? 'user';
-
+    public function insert($req)
+    {
+        $usuario = $_POST['usuario'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
         if (empty($usuario) || empty($email) || empty($password)) {
-            return $this->view->renderForm('Todos los campos son obligatorios');
+            return $this->view->renderForm($req, 'Todos los campos son obligatorios');
+        }
+        if ($this->model->existeUsuario($usuario)) {
+            return $this->view->renderRegistro($req, 'El nombre de usuario ya está en uso');
+        }
+        if ($this->model->existeEmail($email)) {
+            return $this->view->renderRegistro($req, 'El email ya está registrado');
         }
 
-    
+        $rol = "user";
         $resultado = $this->model->insert($usuario, $email, $password, $rol);
-        if (!$resultado) return $this->view->renderForm('El usuario o email ya existe');
-
+        if (!$resultado) return $this->view->renderForm($req, 'El usuario o email ya existe');
         header('Location: ' . BASE_URL . 'usuarios');
-        exit();
     }
 
-    public function delete($id) {
+    public function delete($req, $id)
+    {
         $this->model->delete($id);
         header('Location: ' . BASE_URL . 'usuarios');
-        exit();
     }
 
-
-    public function showLogin() {
-        $this->view->renderLogin();
+    public function showLogin($req)
+    {
+        $this->view->renderLogin($req);
     }
 
-    public function doLogin() {
-        $email    = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
+    public function doLogin($req)
+    {
+        $usuarioInput = trim($_POST['usuario'] ?? '');
+        $passwordInput = $_POST['password'] ?? '';
 
-        if (empty($email) || empty($password)) {
-            return $this->view->renderLogin('Email y contraseña son obligatorios');
+        if (empty($usuarioInput) || empty($passwordInput)) {
+            return $this->view->renderLogin($req, 'Usuario y contraseña son obligatorios');
         }
 
-        $usuario = $this->model->verificarLogin($email, $password);
+        $usuario = $this->model->verificarLogin($usuarioInput, $passwordInput);
 
         if ($usuario) {
-            $_SESSION['usuario_id']     = $usuario->id;
-            $_SESSION['usuario_nombre'] = $usuario->usuario;
-            $_SESSION['usuario_email']  = $usuario->email;
-            $_SESSION['usuario_rol']    = $usuario->rol;
+            $_SESSION['id'] = $usuario->id;
+            $_SESSION['usuario'] = $usuario->usuario;
+            $_SESSION['nombre'] = $usuario->nombre;
+            $_SESSION['email'] = $usuario->email;
+            $_SESSION['rol'] = $usuario->rol;
             header('Location: ' . BASE_URL . 'home');
-            exit();
+            exit;
         }
 
-        $this->view->renderLogin('Email o contraseña incorrectos');
+        $this->view->renderLogin($req, 'Usuario o contraseña incorrectos');
     }
 
-    public function showRegistro() {
-        $this->view->renderRegistro();
+    public function showRegistro($req)
+    {
+        $this->view->renderRegistro($req);
     }
 
-    public function doRegistro() {
-        $usuario  = trim($_POST['usuario'] ?? '');
-        $email    = trim($_POST['email'] ?? '');
+    public function doRegistro($req)
+    {
+        $usuario = trim($_POST['usuario'] ?? '');
+        $email   = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
         if (empty($usuario) || empty($email) || empty($password)) {
-            return $this->view->renderRegistro('Todos los campos son obligatorios');
+            return $this->view->renderRegistro($req, 'Todos los campos son obligatorios');
+        }
+        if (strlen($password) < 5) {
+            return $this->view->renderRegistro($req, 'La contraseña debe tener al menos 5 caracteres');
         }
 
-        if (strlen($password) < 6) {
-            return $this->view->renderRegistro('La contraseña debe tener al menos 6 caracteres');
+        if ($this->model->existeUsuario($usuario)) {
+            return $this->view->renderRegistro($req, 'El nombre de usuario ya está en uso');
         }
+        if ($this->model->existeEmail($email)) {
+            return $this->view->renderRegistro($req, 'El email ya está registrado');
+        }
+
 
         $resultado = $this->model->insert($usuario, $email, $password);
         if ($resultado) {
             header('Location: ' . BASE_URL . 'login');
-            exit();
+            exit;
         }
 
-        $this->view->renderRegistro('El email o usuario ya existe');
+        $this->view->renderRegistro($req, 'Error al registrar, intente más tarde');
     }
 
-    public function logout() {
+    public function logout()
+    {
         session_destroy();
         header('Location: ' . BASE_URL . 'login');
-        exit();
     }
 }

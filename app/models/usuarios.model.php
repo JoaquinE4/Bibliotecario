@@ -11,7 +11,8 @@ class UsuariosModel
 
     public function getAll()
     {
-        $query = $this->db->query("SELECT id, usuario, email, rol FROM usuarios ORDER BY usuario");
+        $query = $this->db->prepare("SELECT id, usuario, email, rol FROM usuarios ORDER BY usuario");
+        $query->execute();
         return $query->fetchAll(PDO::FETCH_OBJ);
     }
 
@@ -42,17 +43,29 @@ class UsuariosModel
         return $query->execute([$id]);
     }
 
-    public function verificarLogin($email, $password)
+    public function verificarLogin($usuarioInput, $passwordInput)
     {
-        $query = $this->db->prepare("SELECT * FROM usuarios WHERE email = ?");
-        $query->execute([$email]);
+        $query = $this->db->prepare("SELECT * FROM usuarios WHERE usuario = ?");
+        $query->execute([$usuarioInput]);
         $usuario = $query->fetch(PDO::FETCH_OBJ);
 
-        if ($usuario && password_verify($password, $usuario->password)) {
+        if ($usuario && password_verify($passwordInput, $usuario->password)) {
             unset($usuario->password);
             return $usuario;
         }
 
         return false;
+    }
+    public function existeUsuario($usuario)
+    {
+        $query = $this->db->prepare("SELECT 1 FROM usuarios WHERE usuario = ? LIMIT 1");
+        $query->execute([$usuario]);
+        return $query->fetch();
+    }
+    public function existeEmail($email)
+    {
+        $query = $this->db->prepare("SELECT 1 FROM usuarios WHERE email = ? LIMIT 1");
+        $query->execute([$email]);
+        return $query->fetch();
     }
 }

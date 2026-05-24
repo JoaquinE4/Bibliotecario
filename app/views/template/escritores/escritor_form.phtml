@@ -1,0 +1,44 @@
+<main class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <h1 class="h3 mb-0"><?= $editando ? 'Editar Escritor' : 'Nuevo Escritor' ?></h1>
+        </div>
+        <div class="card-body">
+            <?php if (!empty($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+
+            <form action="<?= $editando ? 'escritor/editar/' . $escritor->id : 'escritor/nuevo' ?>" method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-control"
+                        value="<?= htmlspecialchars($escritor->nombre ?? '') ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <textarea name="descripcion" rows="3"
+                        class="form-control"><?= htmlspecialchars($escritor->descripcion ?? '') ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Fecha de nacimiento</label>
+                    <input type="date" name="fecha_nac" class="form-control" value="<?= $escritor->fecha_nac ?? '' ?>"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label class="origen">Origen</label>
+                    <textarea name="origen" rows="3"
+                        class="form-control"><?= htmlspecialchars($escritor->oriogen ?? '') ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">URL de la Foto</label>
+                    <input type="url" name="img" class="form-control" placeholder="https://ejemplo.com/foto.jpg"
+                        value="<?= $editando ? htmlspecialchars($escritor->img ?? '') : '' ?>">
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="escritores" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary"><?= $editando ? 'Actualizar' : 'Guardar' ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

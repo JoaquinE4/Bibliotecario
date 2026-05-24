@@ -1,75 +1,105 @@
 <?php
 require_once __DIR__ . '/../models/escritores.model.php';
 require_once __DIR__ . '/../models/libros.model.php';
-require_once __DIR__ . '/../views/escritores.view.php';
+require_once __DIR__ . '/../views/escritores.view.phtml';
 
-class EscritoresController {
+class EscritoresController
+{
     private $model;
     private $librosModel;
     private $view;
 
-    public function __construct($pdo) {
+    public function __construct($pdo)
+    {
         $this->model       = new EscritoresModel($pdo);
         $this->librosModel = new LibrosModel($pdo);
         $this->view        = new EscritoresView();
     }
 
-    public function getAll() {
-        $escritores = $this->model->getAll();
-        $this->view->renderAll($escritores);
+    public function getAll($req, $query = null)
+    {
+
+        $orden = (isset($_GET['sort']) && strtoupper($_GET['sort']) === 'DESC') ? 'DESC' : 'ASC';
+
+        if ($query !== null && $query !== '') {
+            $escritores = $this->model->getByOrigen($query, $orden);
+        } else {
+            $escritores = $this->model->getAll($orden);
+        }
+
+        $origenes = $this->model->getOrigenes();
+
+        $this->view->setUser($req->user);
+        $this->view->renderAll($req, $escritores, $origenes, $orden);
     }
 
-    public function get($id) {
+
+    public function get($req, $id)
+    {
+        $this->view->setUser($req->user);
+
         $escritor = $this->model->get($id);
         if (!$escritor) return $this->view->renderError('Escritor no encontrado');
         $libros = $this->librosModel->getByAutor($id);
-        $this->view->renderDetalle($escritor, $libros);
+        $this->view->renderDetalle($req, $escritor, $libros);
     }
 
-    public function formNuevo() {
-        $this->view->renderForm();
+    public function formNuevo($req)
+    {
+        $this->view->renderForm($req);
     }
 
-    public function insert() {
+    public function insert($req)
+    {
+        $this->view->setUser($req->user);
+
         $nombre      = trim($_POST['nombre'] ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
         $fecha_nac   = $_POST['fecha_nac'] ?? '';
         $origen      = trim($_POST['origen'] ?? '');
+        $img = trim($_POST['img']) ?? null;
 
         if (empty($nombre) || empty($fecha_nac) || empty($origen)) {
-            return $this->view->renderForm(null, 'Nombre, fecha de nacimiento y origen son obligatorios');
+            return $this->view->renderForm($req, null, 'Nombre, fecha de nacimiento y origen son obligatorios');
         }
 
-        $this->model->insert($nombre, $descripcion, $fecha_nac, $origen);
+        if ($this->model->existeEscritorPorNombre($nombre)) {
+            return $this->view->renderForm($req, null, 'Ya existe un escritor con ese nombre');
+        }
+
+
+        $this->model->insert($nombre, $descripcion, $fecha_nac, $origen, $img);
         header('Location: ' . BASE_URL . 'escritores');
-        exit();
     }
 
-    public function formEditar($id) {
+    public function formEditar($req, $id)
+    {
         $escritor = $this->model->get($id);
         if (!$escritor) return $this->view->renderError('Escritor no encontrado');
-        $this->view->renderForm($escritor);
+        $this->view->renderForm($req, $escritor);
     }
 
-    public function update($id) {
+    public function update($req, $id)
+    {
+        $this->view->setUser($req->user);
+
         $nombre      = trim($_POST['nombre'] ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
         $fecha_nac   = $_POST['fecha_nac'] ?? '';
         $origen      = trim($_POST['origen'] ?? '');
-
+        $img = trim($_POST['img']) ?? null;
         if (empty($nombre) || empty($fecha_nac) || empty($origen)) {
             $escritor = $this->model->get($id);
-            return $this->view->renderForm($escritor, 'Nombre, fecha de nacimiento y origen son obligatorios');
+            return $this->view->renderForm($req, $escritor, 'Nombre, fecha de nacimiento y origen son obligatorios');
         }
 
-        $this->model->update($id, $nombre, $descripcion, $fecha_nac, $origen);
-        header('Location: ' . BASE_URL . 'escritores');
-        exit();
+        $id = $this->model->update($id, $nombre, $descripcion, $fecha_nac, $origen, $img);
+        header('Location: ' . BASE_URL  . 'escritor/' . $id);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $this->model->delete($id);
         header('Location: ' . BASE_URL . 'escritores');
-        exit();
     }
 }

@@ -1,0 +1,16 @@
+<div class="container my-3">
+    <div class="my-2">
+        <a href="<?= $req->currentUrl ?>?sort=ASC" class="btn btn-light btn-sm">Fecha de nacimiento ↑</a>
+        <a href="<?= $req->currentUrl ?>?sort=DESC" class="btn btn-light btn-sm">Fecha de nacimiento ↓</a>
+    </div>
+
+    <a href="<?= BASE_URL ?>/escritores" class="btn btn-outline-secondary btn-sm">Todos</a>
+
+    <?php foreach ($origenes as $o): ?>
+    <?php if (empty($o->origen)) continue; ?>
+
+    <a href="<?= BASE_URL . 'escritores/' . urlencode($o->origen); ?>" class="btn btn-secondary btn-sm">
+        <?= $o->origen; ?>
+    </a>
+    <?php endforeach; ?>
+</div>

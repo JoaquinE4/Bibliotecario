@@ -1,0 +1,27 @@
+   <main>
+       <div>
+           <h2>Nuevo Usuario</h2>
+           <?php if (!empty($error)): ?>
+           <div><?= htmlspecialchars($error) ?></div>
+           <?php endif; ?>
+           <form action="usuario/nuevo" method="POST">
+               <div>
+                   <label>Usuario</label>
+                   <input type="text" name="usuario" required>
+               </div>
+               <div>
+                   <label>Email</label>
+                   <input type="email" name="email" required>
+               </div>
+               <div>
+                   <label>Contraseña</label>
+                   <input type="password" name="password" required minlength="6">
+               </div>
+
+               <div>
+                   <a href="usuarios">Cancelar</a>
+                   <button type="submit">Guardar</button>
+               </div>
+           </form>
+       </div>
+   </main>

@@ -1,0 +1,73 @@
+<main class="container my-5">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+        <h1 class="display-5 fw-bold text-dark mb-0"><?= htmlspecialchars($libro->titulo) ?></h1>
+
+        <?php if (isset($this->user->rol) && $this->user->rol === 'admin'): ?>
+        <div class="btn-group" role="group" aria-label="Acciones de Administrador">
+            <a href="libro/editar/<?= $libro->id ?>" class="btn btn-outline-primary">
+                Editar
+            </a>
+            <a href="libro/eliminar/<?= $libro->id ?>" class="btn btn-outline-danger"
+                onclick="return confirm('¿Eliminar?')">
+                Eliminar
+            </a>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4 col-lg-3 text-center text-md-start">
+            <div class="mb-4 d-flex justify-content-center justify-content-md-start">
+                <?php if (!empty($libro->img)): ?>
+                <img src="<?= htmlspecialchars($libro->img) ?>" alt="Portada de <?= htmlspecialchars($libro->titulo) ?>"
+                    class="img-fluid rounded shadow-sm border" style="max-width: 230px; height: auto;">
+                <?php else: ?>
+                <div class="bg-secondary bg-opacity-25 border rounded d-flex align-items-center justify-content-center shadow-sm mx-auto mx-md-0"
+                    style="width: 200px; height: 290px;">
+                    <span class="text-muted fw-semibold">Sin Portada</span>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="d-grid gap-2 col-9 col-md-12 mx-auto mx-md-0">
+                <a href="escritor/<?= $libro->autor ?>" class="btn btn-outline-secondary btn-sm">
+                    👤 Ver perfil del autor
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-lg-9">
+            <div class="card bg-light border-0 p-4 mb-4 shadow-sm">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <span class="text-muted d-block small uppercase fw-bold">Autor</span>
+                        <span
+                            class="fs-5 text-dark fw-medium"><?= htmlspecialchars($libro->autor_nombre ?? 'Desconocido') ?></span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="text-muted d-block small uppercase fw-bold">Género</span>
+                        <span
+                            class="badge bg-primary px-2.5 py-1.5 mt-1"><?= htmlspecialchars($libro->genero ?? 'Sin género') ?></span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="text-muted d-block small uppercase fw-bold">Año de Publicación</span>
+                        <span class="fs-5 text-dark"><?= $libro->anio ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <section class="mb-4">
+                <h3 class="h5 text-secondary border-bottom pb-2 mb-3">Sinopsis</h3>
+                <p class="text-muted lh-lg" style="text-align: justify;">
+                    <?= nl2br(htmlspecialchars($libro->sinopsis ?? '')) ?>
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <div class="mt-5 border-top pt-3">
+        <a href="libros" class="btn btn-link p-0 text-decoration-none">
+            Ver catálogo de libros
+        </a>
+    </div>
+</main>

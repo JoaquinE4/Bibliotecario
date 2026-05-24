@@ -1,0 +1,34 @@
+<main>
+    <div>
+        <h1>Usuarios</h1>
+        <a href="usuario/nuevo">+ Nuevo</a>
+    </div>
+    <?php if (!empty($usuarios)): ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($usuarios as $usuario): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($usuario->id) ?></td>
+                        <td><?= htmlspecialchars($usuario->usuario) ?></td>
+                        <td><?= htmlspecialchars($usuario->email) ?></td>
+                        <td><?= htmlspecialchars($usuario->rol) ?></td>
+                        <td>
+                            <a href="usuario/eliminar/<?= $usuario->id ?>" onclick="return confirm('¿Eliminar?')">Eliminar</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>No hay usuarios registrados.</p>
+    <?php endif; ?>
+</main>

@@ -1,0 +1,41 @@
+<?php
+class LibrosView
+{
+    protected $user;
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public function renderAll($req, $libros)
+    {
+
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/libros/libros_.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderDetalle($req, $libro)
+    {
+
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/libros/libro_detail.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderForm($req, $libro = null, $escritores = [], $error = '')
+    {
+        $editando = $libro !== null;
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/libros/libro_form.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderError($error)
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/error.template.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+}

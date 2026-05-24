@@ -1,0 +1,42 @@
+<?php
+class EscritoresView
+{
+    protected $user;
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public function renderAll($req, $escritores, $origenes, $orden = 'ASC')
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+
+        require_once __DIR__ . '/template/escritores/escritores_.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderDetalle($req, $escritor, $libros)
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/escritores/escritor_detail.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+
+
+    public function renderForm($req, $escritor = null, $error = null)
+    {
+        $editando = $escritor !== null;
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/escritores/escritor_form.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderError($error)
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/error.template.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+}

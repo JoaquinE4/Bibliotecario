@@ -1,0 +1,75 @@
+<main class="container my-5">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+        <h1 class="display-5 fw-bold text-dark mb-0"><?= htmlspecialchars($escritor->nombre) ?></h1>
+
+        <?php if (isset($this->user->rol) && $this->user->rol === 'admin'): ?>
+        <div class="btn-group" role="group" aria-label="Acciones de Administrador">
+            <a href="escritor/editar/<?= $escritor->id ?>" class="btn btn-outline-primary">
+                Editar
+            </a>
+            <a href="escritor/eliminar/<?= $escritor->id ?>" class="btn btn-outline-danger"
+                onclick="return confirm('¿Eliminar?')">
+                Eliminar
+            </a>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4 text-center text-md-start">
+            <div class="mb-4 d-flex justify-content-center justify-content-md-start">
+                <?php if (!empty($escritor->img)): ?>
+                <img src="<?= htmlspecialchars($escritor->img) ?>"
+                    alt="Foto de <?= htmlspecialchars($escritor->nombre) ?>"
+                    class="img-fluid rounded-circle border border-3 shadow-sm"
+                    style="width: 180px; height: 180px; object-fit: cover;">
+                <?php else: ?>
+                <div class="bg-light border border-3 rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                    style="width: 180px; height: 180px;">
+                    <span class="text-muted fw-semibold">Sin Foto</span>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="card bg-light border-0 p-3 shadow-sm">
+                <p class="mb-2"><strong>Origen:</strong> <span
+                        class="text-secondary"><?= htmlspecialchars($escritor->origen) ?></span></p>
+                <p class="mb-0"><strong>Nacimiento:</strong> <span
+                        class="text-secondary"><?= date('d/m/Y', strtotime($escritor->fecha_nac)) ?></span></p>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <section class="mb-4">
+                <h3 class="h5 text-secondary border-bottom pb-2">Biografía / Descripción</h3>
+                <p class="text-muted lh-base"><?= nl2br(htmlspecialchars($escritor->descripcion ?? '')) ?></p>
+            </section>
+
+            <section class="mb-4">
+                <h3 class="h5 text-secondary border-bottom pb-2">Libros de este autor</h3>
+
+                <?php if (!empty($libros)): ?>
+                <div class="list-group shadow-sm">
+                    <?php foreach ($libros as $libro): ?>
+                    <a href="libro/<?= $libro->id ?>"
+                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span class="text-primary fw-medium"><?= htmlspecialchars($libro->titulo) ?></span>
+                        <span class="badge bg-secondary rounded-pill"><?= $libro->anio ?></span>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+                <?php else: ?>
+                <div class="alert alert-info py-2" role="alert">
+                    Este autor no tiene libros registrados.
+                </div>
+                <?php endif; ?>
+            </section>
+        </div>
+    </div>
+
+    <div class="mt-5 border-top pt-3">
+        <a href="escritores" class="btn btn-link p-0 text-decoration-none">
+            &larr; Volver a la lista de escritores
+        </a>
+    </div>
+</main>

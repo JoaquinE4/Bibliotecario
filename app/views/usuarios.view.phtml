@@ -1,0 +1,45 @@
+<?php
+class UsuariosView
+{
+    protected $user;
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public function renderAll($req, $usuarios)
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/usuarios/usuarios_.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderForm($req, $error = '')
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/usuarios/usuarios_form.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderLogin($req, $error = '')
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/usuarios/usuarios_login.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderRegistro($req, $error = '')
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/usuarios/usuarios_registro.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+
+    public function renderError($req, $error)
+    {
+        require_once __DIR__ . '/template/layout/header.view.phtml';
+        require_once __DIR__ . '/template/error.template.phtml';
+        require_once __DIR__ . '/template/layout/footer.view.phtml';
+    }
+}

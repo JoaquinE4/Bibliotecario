@@ -1,0 +1,22 @@
+        <main>
+            <div>
+                <h2>Iniciar sesión</h2>
+                <?php if (!empty($error)): ?>
+                    <div><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+                <form action="doLogin" method="POST">
+                    <div>
+                        <label for="usuario">Usuario</label>
+                        <input type="text" name="usuario" required>
+                    </div>
+                    <div>
+                        <label for="password">Contraseña</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <div>
+                        <button type="submit">Ingresar</button>
+                    </div>
+                </form>
+                <p>¿No tenés cuenta? <a href="registro">Registrate</a></p>
+            </div>
+        </main>

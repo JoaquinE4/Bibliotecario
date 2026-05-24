@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../views/home.view.php';
+require_once __DIR__ . '/../views/home.view.phtml';
 
 class HomeController
 {
@@ -10,8 +10,9 @@ class HomeController
         $this->view = new HomeView();
     }
 
-    public function index()
+    public function index($req)
     {
-        $this->view->render();
+
+        $this->view->render($req);
     }
 }
